@@ -58,51 +58,56 @@ This module defines the classes that contain the attributes of the nodes and arr
 
 In addition, we comment that in this module it is also possible to show the resulting graph of the Barcelona metro network, however, for the rest of the project it is not necessary and that is why when this module is executed it is not shown every time.
 
-City module
+## `city` module
 
-The city module is responsible for creating and consulting the city map that will represent all the information needed to get from one crossroads in the city of Barcelona to another as quickly as possible on foot or by metro. The city map will be an undirected map resulting from the merger of two other maps: the Barcelona street map (which will be provided by the osmnx module) and the metro map (which will be provided by the metro module). The city graph will be of the following type: CityGraph : TypeAlias = networkx.Graph. Each tab will have an attribute infode typeEdge`, which includes three fields:
+The city module is responsible for creating and consulting the city map that will represent all the information needed to get from one crossroad in the city of Barcelona to another as quickly as possible on foot or by metro. The city map will be an undirected graph resulting from the merge of two other graphs: the Barcelona streets graph (which will be provided by the `osmnx` module) and the metro graph (which will be provided by the `metro` module). The city graph will be of the following type: `CityGraph : TypeAlias = networkx.Graph. Each edge will have an attribute `info` of type `Edge`, which includes three fields:
+- `type`: Indicates whether it is a `railway`, `link` or `street` type edge.
+- `colour`: Represents the colour with which we have to paint each of the edges of the graph.
+- `distance`: Counts the distance between two nodes joined by a given line. These three fields have been chosen according to the needs that will appear throughout the module.
 
-type: Indicates whether it is a railway, link or street type edge.
-colour: Represents the colour with which we have to paint each of the edges of the graph.
-distance: Counts the distance between two nodes joined by a given line. These three fields have been chosen according to the needs we will have throughout the module.
+First of all, we create the `CityGraph`. To do this, we create an empty graph of this type and copy each of the nodes and edges of the graph of the streets of Barcelona. Then, we repeat this procedure with the metro graph. So, the city's graph already contains the graph of the streets and the metro, now we have to join them so that they are connected. Therefore, for each `access` type node, we look for the nearest `OsmnxGraph` node and we join them by means of a new `street` node. This tab, as each one of the `CityGraph`'s arrays, will contain the two nodes that it links, the previously defined as `info` type attribute and the distance that is traced to traverse the edge. We obtain the time it takes to go from one node to another by dividing the distance of the nodes by the speed. This speed will depend on the type of line on which we travel. We have approximated the metro time (`railway` type node) and the walking time (`street` type node) to the maximum according to the times provided by Google Maps. The metro time has been slightly decreased, as it moves at approximately 7.2m/s, but this speed does not take into account the stops. On the other hand, we have also decreased the speed of the `link` type nodes, because walking along the transfers is slower than walking along the road. Moreover, this also helps us to avoid unnecessary line changes and to get as close as possible to the Google Maps result.
 
-First of all, we create the CityGraph. To do this, we create a graph of this type vuit and copy each of the nodes and edges of the graph of the streets of Barcelona. Then, we repeat this procedure with the metro graph. So, the city's graph already contains the graph of the streets and the metro, now we have to join them so that they are connected. Therefore, for each access node, we look for the nearest OsmnxGraph node and we join them by means of a new street node. This tab, as each one of the CityGraph's arrays, will contain the two nodes that it links, the previously defined info type attribute and the distance that is traced to traverse the tab. We obtain the time it takes to go from one node to another by dividing the distance of the nodes by the speed. This speed will depend on the type of line on which we travel. We have approximated the metro time (railway type elevation) and the walking time (street type elevation) to the maximum according to the times provided by Google Maps. The metro time has been slightly increased, as it moves at approximately 7.2m/s, but this speed does not take into account the stops. On the other hand, we have also increased the speed of the link-type bollards, because walking along the junctions is slower than walking along the road. Moreover, this also helps us to avoid unnecessary line changes and to get as close as possible to the Google Maps result.
+Secondly, once we have the `CityGraph`, we deal with the second objective of this module: to find the shortest distance to go from one part of the city to another. To do this, we add to our `CityGraph` a node to the user's starting point and a node to the destination he/she wishes to reach. These are connected to the graph using the shortest_path function of networkx. Once the action is finished, we delete these two additional nodes from the graph to avoid errors during execution.
 
-Secondly, once we have the CityGraph, we deal with the second objective of this module: to find the shortest distance to go from one part of the city to another. To do this, we add to our CityGraph a node to the user's starting point and a node to the destination he/she wishes to reach. These are connected to the graph using the shortest_path function of networkx. Once the action is finished, we delete these two additional nodes from the graph to avoid errors during execution.
+Finally, once we have the desired path, we paint it on the map of Barcelona so that the user knows where to go. To make the map more interpretative, we have decided to paint the sections that the user has to walk on foot in black. On the other hand, the sections that are by metro appear in the colour corresponding to the metro line. Finally, we have created a function that returns the time taken to travel a certain route.
 
-Finally, once we have the desired path, we paint it on the map of Barcelona so that the user knows where to go. To make the map more interpretative, we have decided to paint the sections that the user has to walk on foot in black. On the other hand, the sections that are by metro appear in the colour corresponding to the metro line. Finally, we have created a function that returns the time taken to walk a certain route.
+## `bot` module
 
-The bot module is responsible for the connection of the rest of the modules and their presentation via Telegram. It is the module that allows interacting with the programme and obtaining the results. Attached is an example video of how the button works, also as a way of presenting the final result.
+The `bot` module is responsible for the connection of the rest of the modules and their presentation via **Telegram**. It is the module that allows interacting with the programme and obtaining the results. Attached is an example video of how does the bot work, also as a way of presenting the final result.
 
-Video
+[Video](https://youtube.com/shorts/4conTO2cq1c)
 
 In our case, an extra command has been added to the bot:
+- `/time <number>`: returns the approximate travel time from the user's location to the chosen restaurant. In this way, it can serve as an extra piece of information when choosing a restaurant. This function can be requested after making a `/find`. It is also returned automatically whenever a `/guide` is made.
 
-/time <number>: returns the approximate travel time from the user's location to the chosen restaurant. In this way, it can serve as an extra piece of information when choosing a restaurant. This function can be requested after making a /find. It is also returned automatically whenever a /guide is made.
-We thought it was useful to define this extra function because the code had to be implemented anyway in the /guide. We think that the possibility of calling the function also as a command is a way to give more use to the code and we also think that it can be useful for the user. The approximate walking time can be a decisive factor when choosing a restaurant.
+We thought it was useful to define this extra function because the code had to be implemented anyway in the `/guide`. We think that the possibility of calling the function also as a command is a way to give more use to the code and we also think that it can be useful for the user. The approximate walking time can be a decisive factor when choosing a restaurant.
 
-Errors
+### Errors
+
 In our case, the following error detection messages have been added. These should be taken into account when using the relevant commands in the bot:
 
-There is a particular case of an error that has been dealt with in a general way. This is the case of an error message if anything other than a command is sent to the bot.
+- There is a particular case of an error that has been dealt with in a general way. This is the case of an error message if anything other than a command is sent to the bot.
 
-If you try to send any of the commands /find, /info, /guide or /time without passing the necessary input information, query or number, an error message is sent.
+- If you try to send any of the commands `/find`, `/info`, `/guide` or `/time` without passing the necessary input information, query or number, an error message is sent.
 
-A message is also sent warning that there are no search results if the /find is not able to form a list of restaurants.
+- A message is also sent warning that there are no search results if the `/find` is not able to form a list of restaurants.
 
-If you try to use the /guide or /time function without having previously sent a location, an error message is also displayed on the screen.
+- If you try to use the `/guide` or `/time` function without having previously sent a location, an error message is also displayed on the screen.
 
-The rest of the error messages are included in the three functions /info, /guide and /time:
+The rest of the error messages are included in the three functions `/info`, `/guide` and `/time`:
 
-Error message if any of these functions is executed before doing a /find because we need a <number> from the list to be able to call them.
+- Error message if any of these functions is executed before doing a `/find` because we need a `<number>` from the list to be able to call them.
 
-An error message also appears on the screen if the information entered together with the function name is not a <number>.
+- An error message also appears on the screen if the information entered together with the function name is not a `<number>`.
 
-If the <number> provided does not belong to the list provided by find, an error message will also be displayed on the screen.
+- If the `<number>` provided does not belong to the list provided by find, an error message will also be displayed on the screen.
 
-Below is a video where you can see the error detection of our program:
-
-Finally, a whole series of auxiliary functions have been created to facilitate the reading and understanding of the program, which are attached after all the functions related to the commands. The particular auxiliary functions of the /find just above have been added to make them easier to read, as we believe that it is easier to have them at hand when reading the relevant code.
+Finally, a whole series of auxiliary functions have been created to facilitate the reading and understanding of the program, which are attached after all the functions related to the commands. The particular auxiliary functions of the `/find` just above have been added to make them easier to read, as we believe that it is easier to have them at hand when reading the relevant code.
 
 
-Translated with www.DeepL.com/Translator (free version)
+## Authors
+
+Laura Ramon, Marina Grifell i Alina Castell.
+
+Data Science and Engineering, 
+Universitat Politècnica de Catalunya, 2022
