@@ -1,0 +1,26 @@
+Restaurants:
+pip3 install dataclasses
+pip3 install typing
+pip3 install typing_extensions
+pip3 install easyinput 
+pip3 install pandas 
+pip3 install fuzzywuzzy   
+pip3 install python-Levenshtein
+
+Metro:
+pip3 install networkx  
+pip3 install matplotlib 
+pip3 install staticmap    
+
+City:
+pip3 install osmnx
+pip3 install haversine 
+pip3 install scikit-learn
+
+Bot:
+pip3 install telegram
+pip3 install python-telegram-bot 
+pip3 install re
+
+Comments:
+pip3 install pycodestyle
