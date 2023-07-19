@@ -42,11 +42,11 @@ In all of the above cases, the restaurants have been added to the list taking in
 
 In our case, the three proposed optional implementations of more powerful searches have been done. Next, we will explain how to use them correctly:
 
-- *Diffuse Search*: In this case, the search is implemented to detect similar words in order to avoid possible typing errors in the search. The way to use it is as follows: `/find <query>`, example of query: `pzza`, `piza`, `puzza`... instead of `pizza` and the result should be the same.
+- *Fuzzy Search*: In this case, the search is implemented to detect similar words in order to avoid possible typing errors in the search. The way to use it is as follows: `/find <query>`, example of query: `pzza`, `piza`, `puzza`... instead of `pizza` and the result should be the same.
 
-- *Multiple-word query*: In this case, the search is implemented to make a sarch with several queries. The final result should be a search of the intersections of the queries. The way to use it is the following: `/find <query>`, query examples: `pizza gracia`, `sushi sants`, `pizza hamburger`.... The diffuse search is also included in this one, therefore, the query can contain typing errors.
+- *Multiple-word query*: In this case, the search is implemented to make a sarch with several queries. The final result should be a search of the intersections of the queries. The way to use it is the following: `/find <query>`, query examples: `pizza gracia`, `sushi sants`, `pizza hamburger`.... The fuzzy search is also included in this one, therefore, the query can contain typing errors.
 
-- *Logical search*: In this case, the search implements the logical operators `and`, `or` and `not`. The entries in this case would be: `and(expr,expr)`, `or(expr,expr)` and `not(expr)` or a combination of these, for example: `and(or(expr,expr),and(expr,expr))`. Therefore, the way to use it should be: `/find <query>`, with the query being the expressions mentioned above. The diffuse searcg is also included in this one, therefore, the query can contain typing errors.
+- *Logical search*: In this case, the search implements the logical operators `and`, `or` and `not`. The entries in this case would be: `and(expr,expr)`, `or(expr,expr)` and `not(expr)` or a combination of these, for example: `and(or(expr,expr),and(expr,expr))`. Therefore, the way to use it should be: `/find <query>`, with the query being the expressions mentioned above. The fuzzy search is also included in this one, therefore, the query can contain typing errors.
 
 ## `metro` module
 
